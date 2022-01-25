@@ -26,18 +26,19 @@ const statusMessage = `⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⣴⣆⣠⣤⠀
 ⠀⠀⠀⠀⠀⠀⠀⢿⣿⣦⣄⣀⣠⣴⣿⣿⠁⠀⠈⠻⣿⣿⣿⣿⡿⠏⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠈⠛⠻⠿⠿⠿⠿⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
     sus`
-const LCUConnector = require('lcu-connector');
-const fetch = require('node-fetch');
+import LCUConnector from 'lcu-connector';
+import fetch from 'node-fetch';
 const connector = new LCUConnector();
 
 connector.on('connect', (data) => {
     let { username, password, address, port } = data;
 
-    fetch(`https://${username}:${password}@${address}:${port}/lol-chat/v1/me`, {
+    fetch(`https://${address}:${port}/lol-chat/v1/me`, {
         method: 'PUT',
         body: JSON.stringify({statusMessage}),
         headers: {
-            'content-type': 'application/json'
+            'content-type': 'application/json',
+			'Authorization': 'Basic ' + Buffer.from(`${username}:${password}`).toString("base64")
         }
     }).then(res => res.json()).then(json => {
         console.log(json)
